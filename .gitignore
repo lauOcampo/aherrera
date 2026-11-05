@@ -1,0 +1,9 @@
+# Credenciales del administrador (nunca subir)
+.env
+
+# Contenido real del sitio: se respalda aparte, no va al repositorio
+data/
+uploads/*
+!uploads/.gitkeep
+
+node_modules/

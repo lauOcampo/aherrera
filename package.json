@@ -1,0 +1,13 @@
+{
+  "name": "aherrera-surfaces",
+  "version": "2.0.0",
+  "description": "Sitio de Alex.H Surfaces con panel de administración y backend en Node.js (sin dependencias)",
+  "private": true,
+  "scripts": {
+    "setup": "node backend/setup.js",
+    "start": "node backend/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de administración</title>
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <style>.sidebar .logo img { max-width: 100%; }</style>
+    <!-- Si no hay sesión, vuelve al login antes de mostrar nada -->
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+    <script src="../../assets/js/guard.js"></script>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo"><img src="../../assets/img/logo.jpeg" alt="Alex.H ">
+            <h4>Alex.H</h4>
+        </div>
+        <nav>
+            <button class="nav-btn is-active" data-view="categorias">Categorías</button>
+            <button class="nav-btn" data-view="servicios">Servicios</button>
+            <button class="nav-btn" data-view="nosotros">Acerca de</button>
+        </nav>
+
+        <a href="../index.html" target="_blank" rel="noopener" class="btn btn--ghost btn--sm"
+            style="display:block;margin-top:24px;text-align:center">Ver sitio ↗</a>
+        <button type="button" class="btn btn--ghost btn--sm" id="logout"
+            style="display:block;width:100%;margin-top:8px">Cerrar sesión</button>
+    </aside>
+
+    <main class="main">
+
+        <!-- ========== CATEGORÍAS ========== -->
+        <section class="view is-active" id="view-categorias">
+            <header class="view__head">
+                <h1>Categorías</h1>
+                <p>Crea las categorías para agrupar tus servicios.</p>
+            </header>
+
+            <form class="panel inline-form" id="formCategoria">
+                <input type="text" id="catNombre" placeholder="Nombre de la categoría (ej: Pisos)" maxlength="60"
+                    required>
+                <button type="submit" class="btn btn--primary">Crear categoría</button>
+            </form>
+
+            <div class="panel">
+                <h2>Listado</h2>
+                <ul class="list" id="listaCategorias"></ul>
+            </div>
+        </section>
+
+        <!-- ========== SERVICIOS ========== -->
+        <section class="view" id="view-servicios">
+            <header class="view__head">
+                <h1>Servicios</h1>
+                <p>Crea y administra los servicios que se muestran en la web.</p>
+            </header>
+
+            <form class="panel" id="formServicio" novalidate>
+                <h2 id="formTitulo">Nuevo servicio</h2>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <label for="srvNombre">Nombre</label>
+                        <input type="text" id="srvNombre" placeholder="Ej: Microcemento" maxlength="80" required>
+                    </div>
+                    <div class="field">
+                        <label for="srvCategoria">Categoría</label>
+                        <select id="srvCategoria" required></select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="srvDescripcion">Descripción</label>
+                    <textarea id="srvDescripcion" rows="4" placeholder="Describe el servicio..." required></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Elementos a destacar <span class="hint">(máximo 4)</span></label>
+                    <div id="destacados"></div>
+                    <button type="button" class="btn btn--ghost" id="addDestacado">+ Agregar elemento</button>
+                </div>
+
+                <div class="field">
+                    <label>Imágenes <span class="hint">(una o más)</span></label>
+                    <label class="dropzone" for="srvImagenes">
+                        <span>Haz clic para seleccionar imágenes</span>
+                        <input type="file" id="srvImagenes" accept="image/*" multiple hidden>
+                    </label>
+                    <div class="thumbs" id="previewImagenes"></div>
+                </div>
+
+                <p class="msg" id="msgServicio" role="alert"></p>
+
+                <div class="actions">
+                    <button type="button" class="btn btn--ghost" id="cancelarEdicion" hidden>Cancelar</button>
+                    <button type="submit" class="btn btn--primary" id="btnGuardar">Crear servicio</button>
+                </div>
+            </form>
+
+            <div class="panel">
+                <h2>Servicios creados</h2>
+                <div class="cards" id="listaServicios"></div>
+            </div>
+        </section>
+        <!-- ========== ACERCA DE NOSOTROS ========== -->
+        <section class="view" id="view-nosotros">
+            <header class="view__head">
+                <h1>Acerca de nosotros</h1>
+                <p>Edita el contenido de esta sección de la web.</p>
+            </header>
+
+            <form class="panel" id="formNosotros" novalidate>
+                <h2>Contenido</h2>
+
+                <div class="field">
+                    <label>Imagen o logo</label>
+                    <label class="dropzone" for="nosImagen">
+                        <span>Haz clic para seleccionar una imagen</span>
+                        <input type="file" id="nosImagen" accept="image/*" hidden>
+                    </label>
+                    <div class="thumbs" id="nosImagenPreview"></div>
+                </div>
+
+                <div class="field">
+                    <label for="nosTitulo">Texto principal</label>
+                    <textarea id="nosTitulo" rows="3"
+                        placeholder="Ej: Soluciones en superficies y acabados que combinan diseño, calidad y funcionalidad para crear espacios únicos"></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Estadísticas <span class="hint">(4 recuadros; el segundo se muestra destacado en
+                            naranja)</span></label>
+                    <div class="stat-edits">
+                        <div class="stat-edit">
+                            <span class="stat-edit__n">1</span>
+                            <input type="text" class="stat-valor" maxlength="20" placeholder="Valor (ej: 340 MW)">
+                            <textarea class="stat-texto" rows="2" placeholder="Descripción"></textarea>
+                        </div>
+                        <div class="stat-edit stat-edit--hl">
+                            <span class="stat-edit__n">2</span>
+                            <input type="text" class="stat-valor" maxlength="20" placeholder="Valor (ej: 98,45 %)">
+                            <textarea class="stat-texto" rows="2" placeholder="Descripción"></textarea>
+                        </div>
+                        <div class="stat-edit">
+                            <span class="stat-edit__n">3</span>
+                            <input type="text" class="stat-valor" maxlength="20" placeholder="Valor (ej: 34)">
+                            <textarea class="stat-texto" rows="2" placeholder="Descripción"></textarea>
+                        </div>
+                        <div class="stat-edit">
+                            <span class="stat-edit__n">4</span>
+                            <input type="text" class="stat-valor" maxlength="20" placeholder="Valor (ej: 1.2 m +)">
+                            <textarea class="stat-texto" rows="2" placeholder="Descripción"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="msg" id="msgNosotros" role="alert"></p>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn--primary">Guardar cambios</button>
+                </div>
+            </form>
+
+            <div class="panel">
+                <h2>Vista previa</h2>
+                <div class="about-preview" id="aboutPreview"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="../../assets/js/dashboard.js"></script>
+</body>
+
+</html>

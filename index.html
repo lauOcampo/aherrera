@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex.H | Surfaces – Revestimientos y pavimentos en Palma</title>
+    <meta name="description" content="Revestimientos, microcemento, multicapa y autonivelantes en Palma de Mallorca. Soluciones en superficies que combinan diseño, calidad y funcionalidad.">
+    <meta name="theme-color" content="#012034">
+
+    <!-- Open Graph (vista previa al compartir por WhatsApp / redes) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Alex.H | Surfaces">
+    <meta property="og:description" content="Donde el material se convierte en espacios.">
+    <meta property="og:image" content="../assets/img/portada2.png">
+
+    <link rel="icon" href="assets/img/logo.jpeg">
+
+    <!-- Las fuentes se usaban en el CSS pero nunca se cargaban -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/site.css">
+</head>
+
+<body>
+    <a class="skip-link" href="#proyectos">Saltar al contenido</a>
+
+    <!-- HERO -->
+    <header class="hero">
+        <nav class="nav" aria-label="Principal">
+            <a href="#nosotros">Nosotros</a>
+            <a href="#proyectos">Servicios</a>
+            <a href="#contacto">Contacto</a>
+            <a href="https://wa.me/34682872705?text=Hola%20Alex%2C%20quiero%20consultar%20por%20un%20proyecto"
+               class="btn btn--primary btn--sm" target="_blank" rel="noopener">Hablemos</a>
+        </nav>
+
+        <div class="hero__content">
+            <h1>Donde el material se convierte en espacios</h1>
+            <!-- Antes: caracteres Unicode "negrita matemática" (𝐑𝐞𝐯𝐞𝐬…), que los lectores
+                 de pantalla no leen bien y que fallan en muchas fuentes. Ahora es una lista real. -->
+            <ul class="hero__tags">
+                <li>Revestimientos</li>
+                <li>Microcemento</li>
+                <li>Multicapa</li>
+                <li>Autonivelante de regulación</li>
+                <li>Autonivelante para suelo radiante</li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <!-- NOSOTROS / ESTADÍSTICAS (se actualiza desde el dashboard) -->
+        <section class="about" id="nosotros">
+            <figure class="about__image">
+                <img id="aboutImg" src="assets/img/logo.jpeg" alt="Logo Alex.H Surfaces" width="380" height="380">
+            </figure>
+
+            <div class="about__text">
+                <p class="about__lead" id="aboutLead">
+                    Soluciones en superficies y acabados que combinan diseño, calidad y funcionalidad para crear espacios únicos
+                </p>
+
+                <!-- TODO: reemplaza textos y cifras por tus datos reales
+                     (el texto original era un placeholder en inglés con erratas) -->
+                <div class="stats">
+                    <div class="stat">
+                        <p>Descripción de la métrica 1</p>
+                        <strong>340 <span>MW</span></strong>
+                    </div>
+                    <div class="stat stat--highlight">
+                        <p>Descripción de la métrica 2</p>
+                        <strong>98,45 <span>%</span></strong>
+                    </div>
+                    <div class="stat">
+                        <p>Descripción de la métrica 3</p>
+                        <strong>34</strong>
+                    </div>
+                    <div class="stat">
+                        <p>Descripción de la métrica 4</p>
+                        <strong>1.2 m <span>+</span></strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICIOS (se generan desde el dashboard) -->
+        <section class="projects" id="proyectos">
+            <h2 class="projects__title">
+                Conoce nuestro trabajo y encuentra las superficies ideales para hacer realidad tus ideas
+            </h2>
+
+            <div class="filters" id="filters" role="group" aria-label="Filtrar servicios por categoría"></div>
+
+            <div class="cards" id="cards" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contacto">
+        <div class="footer__brand">
+            <div class="logo">SURFACES</div>
+            <p>Asegura la durabilidad de tu proyecto desde la primera capa.
+                Contacta con nosotros por DM 📩</p>
+            <p class="footer__name">Alex Herrera</p>
+        </div>
+
+        <div class="footer__col">
+            <h4>Contacto</h4>
+            <p><a href="https://instagram.com/aherrera_surfaces" target="_blank" rel="noopener">IG: aherrera_surfaces</a></p>
+            <p><a href="tel:+34682872705">+34 682 87 27 05</a></p>
+            <p>Palma, Illes Balears, España</p>
+        </div>
+
+        <div class="footer__col">
+            <h4>Horarios</h4>
+            <p>Lunes: 8:00 am – 7:00 pm</p>
+            <p>Martes – sábado: 9:00 am – 6:00 pm</p>
+            <p>Domingos: cerrado</p>
+        </div>
+
+        <p class="footer__copy">
+            © <span id="year">2026</span> Alex.H Surfaces. Todos los derechos reservados.
+            <!-- Acceso al panel separado del horario: antes estaba escondido en "Domingos: cerrado" -->
+            · <a class="footer__admin" href="frontend/admin/login.html">Acceso administrador</a>
+        </p>
+    </footer>
+
+    <!-- MODAL: detalle del servicio -->
+    <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitulo">
+        <div class="modal__box">
+            <button type="button" class="modal__close" id="mClose" aria-label="Cerrar">×</button>
+
+            <div class="modal__gallery">
+                <img id="mImg" alt="">
+                <div class="modal__thumbs" id="mThumbs"></div>
+            </div>
+
+            <div class="modal__info">
+                <span class="modal__cat" id="mCat"></span>
+                <h3 id="mTitulo"></h3>
+                <p id="mDesc"></p>
+                <ul class="modal__list" id="mDest"></ul>
+                <a id="mWa" class="btn btn--primary" target="_blank" rel="noopener">Consultar por WhatsApp</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/site.js"></script>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+
+</html>
