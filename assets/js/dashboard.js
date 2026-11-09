@@ -9,7 +9,7 @@
         servicios: [],
         nosotros: { imagen: "", titulo: "", stats: Array.from({ length: 4 }, vacio) },
     };
-    let imagenes = [];      // imágenes del formulario: rutas ya guardadas ("/uploads/...") o nuevas (data URL)
+    let imagenes = [];      // imágenes del formulario: rutas ya guardadas ("/api/img/..." o "/uploads/...") o nuevas (data URL)
     let editandoId = null;
 
     // Ejecuta una petición a la API; el servidor responde con todo el contenido actualizado.

@@ -1,11 +1,12 @@
 {
   "name": "aherrera-surfaces",
   "version": "2.0.0",
-  "description": "Sitio de Alex.H Surfaces con panel de administración y backend en Node.js (sin dependencias)",
+  "description": "Sitio de Alex.H Surfaces con panel de administración. Funciona en Vercel (con Upstash Redis) o en tu computador. Sin dependencias.",
   "private": true,
   "scripts": {
     "setup": "node backend/setup.js",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "migrar": "node backend/migrar.js"
   },
   "engines": {
     "node": ">=18"

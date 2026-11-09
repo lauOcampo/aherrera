@@ -64,7 +64,12 @@ function escribirEnv(valores) {
         process.exit(1);
     }
     rl.close();
-    escribirEnv({ ADMIN_USER: usuario, ADMIN_PASS_HASH: hashPassword(pass) });
+    const hash = hashPassword(pass);
+    escribirEnv({ ADMIN_USER: usuario, ADMIN_PASS_HASH: hash });
     console.log("\nListo. Datos guardados en .env");
     console.log("Si el servidor estaba encendido, reinícialo para aplicar el cambio.");
+    console.log("\nPara el sitio en Vercel, crea estas dos variables (Settings → Environment Variables),");
+    console.log("sin comillas ni espacios, y vuelve a desplegar:\n");
+    console.log(`  ADMIN_USER       ${usuario}`);
+    console.log(`  ADMIN_PASS_HASH  ${hash}\n`);
 })();
