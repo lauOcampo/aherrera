@@ -209,7 +209,9 @@ const CABECERAS = {
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "same-origin",
     "Content-Security-Policy":
-        "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; " +
+        "default-src 'self'; img-src 'self' data: blob:; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src https://fonts.gstatic.com; " +
         "script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
 };
 
@@ -367,22 +369,23 @@ const TIPOS = {
 const CARPETAS_PUBLICAS = ["frontend", "assets", "uploads"];
 
 async function estatico(req, res, ruta) {
-    if (ruta === "/" || ruta === "/index.html") {
-        res.writeHead(302, { Location: "/frontend/index.html" });
-        return res.end();
-    }
     if (ruta === "/admin" || ruta === "/admin/") {
         res.writeHead(302, { Location: "/frontend/admin/login.html" });
         return res.end();
     }
-    const archivo = path.normalize(path.join(ROOT, ruta));
+
+    // La página de inicio está en la raíz del proyecto (index.html)
+    const esInicio = ruta === "/" || ruta === "/index.html";
+    const archivo = esInicio
+        ? path.join(ROOT, "index.html")
+        : path.normalize(path.join(ROOT, ruta));
     const relativo = path.relative(ROOT, archivo);
     const carpeta = relativo.split(path.sep)[0];
     const oculto = relativo.split(path.sep).some((p) => p.startsWith("."));
     const tipo = TIPOS[path.extname(archivo).toLowerCase()];
 
-    if (!CARPETAS_PUBLICAS.includes(carpeta) || oculto || relativo.startsWith("..") || !tipo ||
-        (carpeta === "uploads" && !tipo.startsWith("image/"))) {
+    if (!esInicio && (!CARPETAS_PUBLICAS.includes(carpeta) || oculto || relativo.startsWith("..") || !tipo ||
+        (carpeta === "uploads" && !tipo.startsWith("image/")))) {
         return noEncontrado(res);
     }
     try {
