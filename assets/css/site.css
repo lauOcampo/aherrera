@@ -167,16 +167,28 @@ body.no-scroll {
     to   { opacity: 1; transform: none; }
 }
 
+/* En móvil el detalle sube desde abajo, como una hoja */
+@keyframes modal-slide {
+    from { transform: translateY(100%); }
+    to   { transform: none; }
+}
+
 @media (max-width: 700px) {
     .modal {
-        padding: 12px;
+        padding: 0;
+        place-items: end center;
     }
 
     .modal__box {
         grid-template-columns: 1fr;
+        max-height: 92vh;
+        max-height: 92dvh;
+        border-radius: 16px 16px 0 0;
+        animation: modal-slide .3s ease-out;
     }
 
     .modal__info {
         padding: 22px 20px 26px;
+        padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px));
     }
 }

@@ -12,7 +12,10 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Alex.H | Surfaces">
     <meta property="og:description" content="Donde el material se convierte en espacios.">
-    <meta property="og:image" content="../assets/img/portada2.png">
+    <!-- TODO: og:image debe ser una URL ABSOLUTA con tu dominio, si no WhatsApp no muestra la imagen -->
+    <meta property="og:image" content="https://TU-DOMINIO.com/assets/img/portada2.png">
+    <meta property="og:locale" content="es_ES">
+    <meta name="twitter:card" content="summary_large_image">
 
     <link rel="icon" href="assets/img/logo.jpeg">
 
@@ -26,7 +29,7 @@
 </head>
 
 <body>
-    <a class="skip-link" href="#proyectos">Saltar al contenido</a>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
 
     <!-- HERO -->
     <header class="hero">
@@ -52,7 +55,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main" tabindex="-1">
         <!-- NOSOTROS / ESTADÍSTICAS (se actualiza desde el dashboard) -->
         <section class="about" id="nosotros">
             <figure class="about__image">
@@ -109,14 +112,14 @@
         </div>
 
         <div class="footer__col">
-            <h4>Contacto</h4>
+            <h2 class="footer__title">Contacto</h2>
             <p><a href="https://instagram.com/aherrera_surfaces" target="_blank" rel="noopener">IG: aherrera_surfaces</a></p>
             <p><a href="tel:+34682872705">+34 682 87 27 05</a></p>
             <p>Palma, Illes Balears, España</p>
         </div>
 
         <div class="footer__col">
-            <h4>Horarios</h4>
+            <h2 class="footer__title">Horarios</h2>
             <p>Lunes: 8:00 am – 7:00 pm</p>
             <p>Martes – sábado: 9:00 am – 6:00 pm</p>
             <p>Domingos: cerrado</p>
@@ -150,7 +153,6 @@
     </div>
 
     <script src="assets/js/site.js"></script>
-    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 
 </html>

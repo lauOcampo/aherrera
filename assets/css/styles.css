@@ -32,6 +32,7 @@
 }
 
 html {
+    scrollbar-gutter: stable;          /* sin salto de ancho al abrir el modal */
     scroll-behavior: smooth;
     scroll-padding-top: 24px;
     -webkit-text-size-adjust: 100%;
@@ -44,6 +45,10 @@ body {
     background: #fff;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+}
+
+main:focus {
+    outline: none;                     /* recibe el foco desde "Saltar al contenido" */
 }
 
 img {
@@ -155,6 +160,7 @@ textarea {
 .hero {
     position: relative;
     min-height: clamp(440px, 65vh, 680px);
+    min-height: clamp(440px, 65svh, 680px);
     display: flex;
     align-items: flex-end;
     padding: 120px var(--gutter) 48px;   /* espacio arriba para el nav */
@@ -370,6 +376,7 @@ textarea {
 }
 
 .card {
+    position: relative;                /* ancla del enlace que cubre toda la tarjeta */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -391,6 +398,30 @@ textarea {
 
 .card:focus-within {
     box-shadow: var(--shadow-card-hover);
+}
+
+.card:has(:focus-visible) {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* Toda la tarjeta abre el detalle: el pseudo-elemento del botón la cubre.
+   El JS no cambia, sigue escuchando el clic en [data-ver]. */
+.card {
+    cursor: pointer;
+}
+
+.card .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+}
+
+/* Un transform en el botón cambiaría su "ancla" y encogería el área clicable */
+.card .btn--primary:hover,
+.card .btn:active {
+    transform: none;
 }
 
 .card img {
@@ -475,7 +506,7 @@ textarea {
     font-size: .9rem;
 }
 
-.footer__col h4 {
+.footer__title {
     margin-bottom: 10px;
     font-size: 1rem;
     font-weight: 700;
