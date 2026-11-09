@@ -1,17 +1,7 @@
-/* Extras para la parte dinámica del sitio (se carga DESPUÉS de styles.css) */
-
-/* ---------- Filtros y tarjetas ---------- */
-.filters {
-    flex-wrap: wrap;
-}
-
-.pill {
-    font-family: var(--font-sans);
-}
-
-.filters__more {
-    cursor: pointer;
-}
+/* =========================================================
+   site.css · parte dinámica del sitio (se carga DESPUÉS de styles.css)
+   Filtros, tarjetas y recorte de texto viven ahora en styles.css
+   ========================================================= */
 
 .cards__empty {
     grid-column: 1 / -1;
@@ -19,21 +9,7 @@
     text-align: center;
     color: var(--muted);
     font-family: var(--font-sans);
-    font-size: .9rem;
-}
-
-/* Antes faltaba -webkit-line-clamp, así que el recorte nunca se aplicaba */
-.card p {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    overflow: hidden;
-}
-
-.card ul {
-    flex-wrap: wrap;
-    justify-content: center;
+    font-size: .95rem;
 }
 
 /* ---------- Modal de detalle ---------- */
@@ -61,7 +37,7 @@ body.no-scroll {
 .modal__box {
     position: relative;
     width: 100%;
-    max-width: 860px;
+    max-width: 880px;
     max-height: 90vh;
     max-height: 90dvh;
     overflow: auto;
@@ -69,7 +45,7 @@ body.no-scroll {
     display: grid;
     grid-template-columns: 1.1fr 1fr;
     background: #fff;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
     animation: modal-pop .25s ease-out;
 }
@@ -79,16 +55,16 @@ body.no-scroll {
     top: 10px;
     right: 10px;
     z-index: 1;
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     border: 0;
     border-radius: 50%;
     background: rgba(0, 0, 0, .65);
     color: #fff;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
-    transition: background .2s;
+    transition: background-color .2s;
 }
 
 .modal__close:hover {
@@ -99,7 +75,7 @@ body.no-scroll {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    background: #eee;
+    background: var(--blue-tint);
 }
 
 .modal__thumbs {
@@ -107,6 +83,10 @@ body.no-scroll {
     gap: 8px;
     padding: 10px;
     overflow-x: auto;
+}
+
+.modal__thumbs:empty {
+    display: none;
 }
 
 .modal__thumbs img {
@@ -118,7 +98,7 @@ body.no-scroll {
     border-radius: 4px;
     opacity: .6;
     cursor: pointer;
-    transition: opacity .2s;
+    transition: opacity .2s, border-color .2s;
 }
 
 .modal__thumbs img:hover {
@@ -134,12 +114,12 @@ body.no-scroll {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 32px 26px;
+    padding: 36px 28px 28px;
 }
 
 .modal__cat {
     font-family: var(--font-sans);
-    font-size: .72rem;
+    font-size: .75rem;
     font-weight: 600;
     letter-spacing: .06em;
     text-transform: uppercase;
@@ -147,20 +127,21 @@ body.no-scroll {
 }
 
 .modal__info h3 {
-    font-size: 1.6rem;
+    font-size: 1.75rem;
     font-weight: 500;
     line-height: 1.1;
+    text-wrap: balance;
 }
 
 .modal__info p {
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--muted);
     white-space: pre-line;
 }
 
 .modal__list {
     font-family: var(--font-sans);
-    font-size: .85rem;
+    font-size: .875rem;
 }
 
 .modal__list li {
@@ -169,14 +150,11 @@ body.no-scroll {
 
 .modal__list li::before {
     content: "• ";
-    color: var(--blue);
+    color: var(--accent);
 }
 
 .modal__info .btn {
     margin-top: auto;
-    text-align: center;
-    padding: 12px 18px;
-    font-size: 13px;
 }
 
 @keyframes modal-fade {
@@ -190,6 +168,10 @@ body.no-scroll {
 }
 
 @media (max-width: 700px) {
+    .modal {
+        padding: 12px;
+    }
+
     .modal__box {
         grid-template-columns: 1fr;
     }

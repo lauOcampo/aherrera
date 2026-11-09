@@ -1,27 +1,58 @@
+/* =========================================================
+   dashboard.css · panel de administración
+   ========================================================= */
+
+/* ---------- Variables ---------- */
 :root {
     --blue: #012034;
-    --blue-soft: #eceefe;
-    --ink: #15172b;
-    --muted: #6b6f85;
-    --line: #e1e3ee;
-    --bg: #f4f5fb;
+    --blue-hover: #0b3a58;
+    --blue-soft: #e7eef3;
+    --accent: #fb8512;
+    --accent-soft: #fff7ee;
+    --ink: #12212c;
+    --muted: #5d6a75;
+    --line: #dfe5ea;
+    --bg: #f4f6f8;
     --danger: #c62828;
+    --danger-soft: #fdf0f0;
+    --danger-line: #f0c4c4;
     --ok: #1b7a3d;
+    --ring: 0 0 0 3px rgba(1, 32, 52, .18);
+    --radius: 8px;
+    --radius-lg: 12px;
+    color-scheme: light;
 }
 
-* {
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
 body {
     display: grid;
-    grid-template-columns: 230px 1fr;
+    grid-template-columns: 240px minmax(0, 1fr);
     min-height: 100vh;
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
     color: var(--ink);
     background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
 }
 
 /* ---------- Sidebar ---------- */
@@ -29,11 +60,14 @@ body {
     position: sticky;
     top: 0;
     height: 100vh;
-    padding: 28px 18px;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 18px 20px;
+    overflow-y: auto;
     background: #fff;
     border-right: 1px solid var(--line);
 }
-
 
 .logo {
     display: flex;
@@ -41,14 +75,18 @@ body {
     gap: 10px;
     margin-bottom: 32px;
 }
+
 .logo img {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
+    flex: none;
+    object-fit: cover;
+    border-radius: var(--radius);
 }
-.logo h4{
-    font-size: 1.3rem;
+
+.logo h4 {
+    font-size: 1.25rem;
     letter-spacing: .12em;
-    
 }
 
 .sidebar nav {
@@ -58,18 +96,22 @@ body {
 }
 
 .nav-btn {
-    text-align: left;
+    width: 100%;
+    min-height: 42px;
     padding: 10px 14px;
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--radius);
     background: none;
+    text-align: left;
     font-size: .95rem;
     color: var(--muted);
     cursor: pointer;
+    transition: background-color .2s, color .2s;
 }
 
 .nav-btn:hover {
     background: var(--bg);
+    color: var(--ink);
 }
 
 .nav-btn.is-active {
@@ -78,11 +120,19 @@ body {
     font-weight: 600;
 }
 
-/* ---------- Main ---------- */
+/* Reemplaza los style="..." que estaban escritos en el HTML */
+.sidebar__actions {
+    display: grid;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 24px;
+}
+
+/* ---------- Contenido ---------- */
 .main {
-    padding: 36px 40px 60px;
-    max-width: 980px;
     width: 100%;
+    max-width: 980px;
+    padding: 36px 40px 60px;
 }
 
 .view {
@@ -98,8 +148,9 @@ body {
 }
 
 .view__head h1 {
-    font-size: 1.7rem;
     margin-bottom: 4px;
+    font-size: 1.7rem;
+    line-height: 1.2;
 }
 
 .view__head p {
@@ -108,16 +159,17 @@ body {
 }
 
 .panel {
+    margin-bottom: 24px;
+    padding: 24px;
     background: #fff;
     border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 24px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 2px rgba(1, 32, 52, .04);
 }
 
 .panel h2 {
-    font-size: 1.05rem;
     margin-bottom: 18px;
+    font-size: 1.05rem;
 }
 
 /* ---------- Formularios ---------- */
@@ -125,11 +177,12 @@ body {
     margin-bottom: 18px;
 }
 
-.field>label {
+/* :not(.dropzone) — antes la zona de carga heredaba negrita y tamaño de etiqueta */
+.field > label:not(.dropzone) {
     display: block;
-    font-size: .85rem;
-    font-weight: 600;
     margin-bottom: 6px;
+    font-size: .875rem;
+    font-weight: 600;
 }
 
 .hint {
@@ -144,28 +197,37 @@ body {
 }
 
 input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
 select,
 textarea {
     width: 100%;
     padding: 10px 12px;
-    font: inherit;
-    font-size: .95rem;
-    border: 1px solid var(--line);
-    border-radius: 8px;
+    font-size: 1rem;                   /* 16px: evita el zoom automático en iPhone */
+    line-height: 1.4;
     background: #fff;
-    outline: none;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    outline: 2px solid transparent;    /* visible en modo alto contraste */
     transition: border-color .2s, box-shadow .2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #8794a0;
 }
 
 textarea {
     resize: vertical;
+    min-height: 5.5em;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(42, 45, 224, .14);
+    box-shadow: var(--ring);
 }
 
 .inline-form {
@@ -177,16 +239,26 @@ textarea:focus {
     flex: 1;
 }
 
+/* ---------- Botones ---------- */
 .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
     padding: 10px 18px;
     border: 1px solid transparent;
-    border-radius: 8px;
-    font: inherit;
+    border-radius: var(--radius);
     font-size: .9rem;
     font-weight: 500;
-    cursor: pointer;
-    transition: filter .2s, background .2s;
+    line-height: 1.2;
+    text-decoration: none;             /* los <a class="btn"> salían subrayados */
     white-space: nowrap;
+    cursor: pointer;
+    transition: background-color .2s, border-color .2s, opacity .2s;
+}
+
+.btn[hidden] {
+    display: none;
 }
 
 .btn--primary {
@@ -195,7 +267,7 @@ textarea:focus {
 }
 
 .btn--primary:hover {
-    filter: brightness(1.12);
+    background: var(--blue-hover);
 }
 
 .btn--ghost {
@@ -208,24 +280,25 @@ textarea:focus {
     background: var(--bg);
 }
 
-.btn--ghost:disabled {
-    opacity: .45;
-    cursor: not-allowed;
-}
-
 .btn--danger {
     background: #fff;
-    border-color: #f0c4c4;
+    border-color: var(--danger-line);
     color: var(--danger);
 }
 
 .btn--danger:hover {
-    background: #fdf0f0;
+    background: var(--danger-soft);
+}
+
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
 }
 
 .btn--sm {
+    min-height: 36px;
     padding: 6px 12px;
-    font-size: .8rem;
+    font-size: .8125rem;
 }
 
 .actions {
@@ -235,9 +308,9 @@ textarea:focus {
 }
 
 .msg {
-    min-height: 1.2em;
+    min-height: 1.3em;
     margin-bottom: 12px;
-    font-size: .88rem;
+    font-size: .875rem;
     color: var(--danger);
 }
 
@@ -257,37 +330,62 @@ textarea:focus {
 }
 
 .destacado-row button {
-    width: 38px;
+    width: 44px;
+    flex: none;
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: var(--radius);
     background: #fff;
     color: var(--danger);
     font-size: 1.1rem;
     cursor: pointer;
+    transition: background-color .2s, border-color .2s;
+}
+
+.destacado-row button:hover {
+    background: var(--danger-soft);
+    border-color: var(--danger-line);
 }
 
 /* ---------- Imágenes ---------- */
 .dropzone {
+    position: relative;
     display: block;
-    padding: 22px;
+    padding: 24px;
     text-align: center;
     border: 2px dashed var(--line);
     border-radius: 10px;
     color: var(--muted);
     font-size: .9rem;
     cursor: pointer;
-    transition: border-color .2s, background .2s;
+    transition: border-color .2s, background-color .2s;
 }
 
-.dropzone:hover {
+.dropzone:hover,
+.dropzone:focus-within {
     border-color: var(--blue);
     background: var(--blue-soft);
+}
+
+/* El input tiene el atributo "hidden", que lo saca del teclado.
+   Lo dejamos invisible pero enfocable para poder usarlo con Tab + Enter. */
+.dropzone input[hidden] {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dropzone:has(input:focus-visible) {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .thumbs {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
     margin-top: 12px;
 }
 
@@ -301,26 +399,31 @@ textarea:focus {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: var(--radius);
     border: 1px solid var(--line);
 }
 
 .thumb button {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    width: 22px;
-    height: 22px;
-    border: 0;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #fff;
     border-radius: 50%;
     background: var(--danger);
     color: #fff;
     font-size: .8rem;
     line-height: 1;
     cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
 }
 
-/* ---------- Listas ---------- */
+.thumb button:hover {
+    filter: brightness(1.1);
+}
+
+/* ---------- Listas y tarjetas ---------- */
 .list {
     list-style: none;
 }
@@ -339,9 +442,9 @@ textarea:focus {
 }
 
 .list .count {
-    color: var(--muted);
-    font-size: .82rem;
     margin-left: 8px;
+    color: var(--muted);
+    font-size: .8125rem;
 }
 
 .empty {
@@ -351,23 +454,23 @@ textarea:focus {
 
 .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
     gap: 18px;
 }
 
 .card {
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    overflow: hidden;
-    background: #fff;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
 }
 
 .card__img {
-    height: 150px;
-    background: var(--bg);
     position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--bg);
 }
 
 .card__img img {
@@ -382,48 +485,52 @@ textarea:focus {
     right: 8px;
     padding: 3px 9px;
     border-radius: 999px;
-    background: rgba(0, 0, 0, .65);
+    background: rgba(0, 0, 0, .7);
     color: #fff;
-    font-size: .72rem;
+    font-size: .75rem;
 }
 
 .card__body {
-    padding: 14px;
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    padding: 14px;
 }
 
 .card__cat {
-    font-size: .75rem;
     color: var(--blue);
+    font-size: .75rem;
     font-weight: 600;
-    text-transform: uppercase;
     letter-spacing: .04em;
+    text-transform: uppercase;
 }
 
 .card__body h3 {
     font-size: 1.05rem;
+    line-height: 1.25;
 }
 
+/* Faltaba -webkit-line-clamp: el recorte nunca se aplicaba */
 .card__desc {
-    font-size: .85rem;
-    color: var(--muted);
     display: -webkit-box;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     overflow: hidden;
+    color: var(--muted);
+    font-size: .875rem;
 }
 
 .card__body ul {
-    list-style: none;
-    font-size: .82rem;
     margin-top: 4px;
+    list-style: none;
+    font-size: .8125rem;
 }
 
 .card__body li::before {
     content: "• ";
-    color: var(--blue);
+    color: var(--accent);
 }
 
 .card__actions {
@@ -444,34 +551,36 @@ textarea:focus {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 14px 14px 14px 40px;
+    padding: 14px 14px 14px 44px;
     border: 1px solid var(--line);
     border-radius: 10px;
 }
 
 .stat-edit--hl {
-    border-color: #fb8512;
-    background: #fff7ee;
+    border-color: var(--accent);
+    background: var(--accent-soft);
 }
 
 .stat-edit__n {
     position: absolute;
     top: 14px;
     left: 12px;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     display: grid;
     place-items: center;
     border-radius: 50%;
     background: var(--ink);
     color: #fff;
-    font-size: .72rem;
+    font-size: .75rem;
 }
 
 .stat-edit--hl .stat-edit__n {
-    background: #fb8512;
+    background: var(--accent);
+    color: var(--blue);
 }
 
+/* Vista previa: imita el bloque "Nosotros" del sitio público */
 .about-preview {
     --navy: #04202f;
     --orange: #fb8512;
@@ -491,6 +600,7 @@ textarea:focus {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     background: #fff;
+    border-radius: 6px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
 }
 
@@ -502,15 +612,15 @@ textarea:focus {
 }
 
 .ap__lead {
+    min-height: 1.3em;
+    margin-bottom: 20px;
     font-size: 1.2rem;
     line-height: 1.3;
     color: var(--navy);
-    margin-bottom: 20px;
-    min-height: 1.3em;
 }
 
 .ap__lead .ph {
-    color: #aaa;
+    color: #8794a0;
 }
 
 .ap__stats {
@@ -535,58 +645,91 @@ textarea:focus {
 }
 
 .ap__stat p {
-    font-size: .78rem;
+    font-size: .8rem;
     color: #555;
 }
 
 .ap__stat strong {
     font-size: 2rem;
     font-weight: 400;
-    color: var(--navy);
     line-height: 1;
+    color: var(--navy);
 }
 
+/* Texto oscuro sobre naranja (igual que en el sitio público) */
 .ap__stat.is-hl {
     background: var(--orange);
 }
 
 .ap__stat.is-hl p,
 .ap__stat.is-hl strong {
-    color: #fff;
+    color: var(--navy);
 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 760px) {
     body {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 
+    /* La barra lateral pasa a ser una cabecera: logo + acciones arriba, menú debajo */
     .sidebar {
         position: static;
         height: auto;
-        padding: 14px 16px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 12px;
+        padding: 12px 16px;
+        overflow: visible;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
     }
 
     .logo {
-        margin-bottom: 12px;
+        flex: 1 1 auto;
+        margin: 0;
+    }
+
+    .logo img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .logo h4 {
+        font-size: 1.1rem;
+    }
+
+    .sidebar__actions {
+        display: flex;
+        margin: 0;
+        padding: 0;
+        order: 2;
     }
 
     .sidebar nav {
+        order: 3;
         flex-direction: row;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .nav-btn {
+        width: auto;
+        flex: none;
+        white-space: nowrap;
     }
 
     .main {
         padding: 24px 16px 48px;
     }
 
-    .grid-2 {
-        grid-template-columns: 1fr;
+    .panel {
+        padding: 18px;
     }
 
-    .stat-edits {
-        grid-template-columns: 1fr;
-    }
-
+    .grid-2,
+    .stat-edits,
     .about-preview {
         grid-template-columns: 1fr;
     }
@@ -597,5 +740,17 @@ textarea:focus {
 
     .inline-form {
         flex-direction: column;
+    }
+
+    .actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
     }
 }
