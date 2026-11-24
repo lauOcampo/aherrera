@@ -147,9 +147,12 @@
         <div class="modal__box">
             <button type="button" class="modal__close" id="mClose" aria-label="Cerrar">×</button>
 
-            <div class="modal__gallery">
-                <img id="mImg" alt="">
-                <div class="modal__thumbs" id="mThumbs"></div>
+            <!-- Carrusel de fotos del servicio: ocupa todo el alto del recuadro -->
+            <div class="modal__gallery" id="mGallery">
+                <div class="modal__slides" id="mSlides"></div>
+                <button type="button" class="modal__arrow modal__arrow--prev" id="mPrev" aria-label="Foto anterior">‹</button>
+                <button type="button" class="modal__arrow modal__arrow--next" id="mNext" aria-label="Foto siguiente">›</button>
+                <div class="modal__dots" id="mDots" role="group" aria-label="Fotos del servicio"></div>
             </div>
 
             <div class="modal__info">

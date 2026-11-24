@@ -195,10 +195,36 @@
     /* ---------- Modal de detalle ---------- */
     const modal = $("modal");
 
-    function mostrarImagen(src) {
-        $("mImg").src = src;
-        document.querySelectorAll("#mThumbs img").forEach((t) =>
-            t.classList.toggle("is-active", t.dataset.src === src));
+    // Carrusel de fotos dentro del detalle
+    const SEGUNDOS_FOTO = 4;
+    let fotoActual = 0;
+    let totalFotos = 0;
+    let timerFotos = null;
+
+    function mostrarFoto(i) {
+        if (!totalFotos) return;
+        fotoActual = (i + totalFotos) % totalFotos;
+        document.querySelectorAll("#mSlides img").forEach((img, n) =>
+            img.classList.toggle("is-active", n === fotoActual));
+        document.querySelectorAll("#mDots button").forEach((b, n) =>
+            b.setAttribute("aria-current", n === fotoActual ? "true" : "false"));
+    }
+
+    function pararFotos() {
+        clearInterval(timerFotos);
+        timerFotos = null;
+    }
+
+    function arrancarFotos() {
+        pararFotos();
+        if (totalFotos < 2 || reducirMovimiento) return;
+        timerFotos = setInterval(() => mostrarFoto(fotoActual + 1), SEGUNDOS_FOTO * 1000);
+    }
+
+    // Al cambiar de foto a mano, el tiempo vuelve a empezar
+    function irAFoto(i) {
+        mostrarFoto(i);
+        arrancarFotos();
     }
 
     function abrirModal(id) {
@@ -212,26 +238,57 @@
         $("mDest").innerHTML = (s.destacados || []).map((d) => `<li>${esc(d)}</li>`).join("");
         $("mWa").href = `${WHATSAPP}?text=${encodeURIComponent("Hola, me interesa el servicio: " + s.nombre)}`;
 
-        $("mThumbs").innerHTML = s.imagenes.length > 1
-            ? s.imagenes.map((src) => `<img src="${src}" data-src="${src}" alt="">`).join("")
+        const fotos = s.imagenes || [];
+        totalFotos = fotos.length;
+        $("mSlides").innerHTML = fotos.map((src, i) =>
+            `<img src="${esc(src)}" alt="${i === 0 ? esc(s.nombre) : ""}">`).join("");
+        const varias = totalFotos > 1;
+        $("mPrev").hidden = !varias;
+        $("mNext").hidden = !varias;
+        $("mDots").innerHTML = varias
+            ? fotos.map((_, i) => `<button type="button" data-foto="${i}" aria-label="Foto ${i + 1}"></button>`).join("")
             : "";
-        mostrarImagen(s.imagenes[0]);
+        mostrarFoto(0);
 
         modal.hidden = false;
         document.body.classList.add("no-scroll");
+        arrancarFotos();
     }
 
     function cerrarModal() {
+        pararFotos();
         modal.hidden = true;
         document.body.classList.remove("no-scroll");
     }
 
-    $("mThumbs").addEventListener("click", (e) => {
-        if (e.target.dataset.src) mostrarImagen(e.target.dataset.src);
+    $("mPrev").addEventListener("click", () => irAFoto(fotoActual - 1));
+    $("mNext").addEventListener("click", () => irAFoto(fotoActual + 1));
+    $("mDots").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-foto]");
+        if (b) irAFoto(Number(b.dataset.foto));
     });
+    // Se detiene mientras el cursor está sobre la foto, para poder mirarla con calma
+    $("mGallery").addEventListener("mouseenter", pararFotos);
+    $("mGallery").addEventListener("mouseleave", () => { if (!modal.hidden) arrancarFotos(); });
+
+    // Deslizar con el dedo en el móvil
+    let toqueX = null;
+    $("mGallery").addEventListener("touchstart", (e) => { toqueX = e.touches[0].clientX; }, { passive: true });
+    $("mGallery").addEventListener("touchend", (e) => {
+        if (toqueX === null) return;
+        const dx = e.changedTouches[0].clientX - toqueX;
+        toqueX = null;
+        if (Math.abs(dx) > 40) irAFoto(fotoActual + (dx < 0 ? 1 : -1));
+    });
+
     $("mClose").addEventListener("click", cerrarModal);
     modal.addEventListener("click", (e) => { if (e.target === modal) cerrarModal(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) cerrarModal(); });
+    document.addEventListener("keydown", (e) => {
+        if (modal.hidden) return;
+        if (e.key === "Escape") cerrarModal();
+        if (e.key === "ArrowLeft") irAFoto(fotoActual - 1);
+        if (e.key === "ArrowRight") irAFoto(fotoActual + 1);
+    });
 
     /* ---------- Inicio ---------- */
     (async () => {

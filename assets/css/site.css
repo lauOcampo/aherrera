@@ -71,43 +71,94 @@ body.no-scroll {
     background: rgba(0, 0, 0, .85);
 }
 
-.modal__gallery #mImg {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
+/* La galería se estira a todo el alto de la columna: sin espacio en blanco debajo */
+.modal__gallery {
+    position: relative;
+    min-height: 420px;
+    overflow: hidden;
     background: var(--blue-tint);
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
 }
 
-.modal__thumbs {
-    display: flex;
-    gap: 8px;
-    padding: 10px;
-    overflow-x: auto;
+.modal__slides {
+    position: absolute;
+    inset: 0;
 }
 
-.modal__thumbs:empty {
+.modal__slides img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity .7s ease;
+}
+
+.modal__slides img.is-active {
+    opacity: 1;
+}
+
+.modal__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .5);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .2s;
+}
+
+.modal__arrow:hover {
+    background: rgba(0, 0, 0, .75);
+}
+
+.modal__arrow--prev { left: 12px; }
+.modal__arrow--next { right: 12px; }
+
+.modal__arrow[hidden] {
     display: none;
 }
 
-.modal__thumbs img {
-    width: 64px;
-    height: 48px;
-    flex: none;
-    object-fit: cover;
-    border: 2px solid transparent;
-    border-radius: 4px;
-    opacity: .6;
+.modal__dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 14px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal__dots button {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .3);
+    box-shadow: 0 0 4px rgba(0, 0, 0, .4);
     cursor: pointer;
-    transition: opacity .2s, border-color .2s;
+    transition: background-color .3s, transform .3s;
 }
 
-.modal__thumbs img:hover {
-    opacity: .9;
+.modal__dots button[aria-current="true"] {
+    background: #fff;
+    transform: scale(1.25);
 }
 
-.modal__thumbs img.is-active {
-    opacity: 1;
-    border-color: var(--blue);
+@media (prefers-reduced-motion: reduce) {
+    .modal__slides img {
+        transition: none;
+    }
 }
 
 .modal__info {
@@ -185,6 +236,13 @@ body.no-scroll {
         max-height: 92dvh;
         border-radius: 16px 16px 0 0;
         animation: modal-slide .3s ease-out;
+    }
+
+    /* En móvil la foto va arriba con proporción fija */
+    .modal__gallery {
+        min-height: 0;
+        aspect-ratio: 4 / 3;
+        border-radius: 16px 16px 0 0;
     }
 
     .modal__info {
