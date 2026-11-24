@@ -159,11 +159,14 @@ textarea {
 /* ---------- Hero ---------- */
 .hero {
     position: relative;
-    min-height: clamp(440px, 65vh, 680px);
-    min-height: clamp(440px, 65svh, 680px);
+    /* Ocupa toda la pantalla inicial. svh = alto visible en móvil sin que
+       la barra del navegador haga saltar la página */
+    min-height: 480px;
+    height: 100vh;
+    height: 100svh;
     display: flex;
     align-items: flex-end;
-    padding: 120px var(--gutter) 48px;   /* espacio arriba para el nav */
+    padding: 120px var(--gutter) clamp(64px, 12vh, 120px);   /* espacio arriba para el nav */
     color: #fff;
     overflow: hidden;
     isolation: isolate;
