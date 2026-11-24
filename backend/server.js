@@ -56,6 +56,16 @@ async function estatico(req, res, ruta) {
 
     // La página de inicio está en la raíz del proyecto (index.html)
     const esInicio = ruta === "/" || ruta === "/index.html";
+    // Google y los navegadores buscan el icono en la raíz del sitio
+    if (ruta === "/favicon.ico") {
+        try {
+            const buf = await fsp.readFile(path.join(ROOT, "favicon.ico"));
+            res.writeHead(200, { ...CABECERAS, "Content-Type": "image/x-icon", "Content-Length": buf.length, "Cache-Control": "public, max-age=604800" });
+            return res.end(req.method === "HEAD" ? undefined : buf);
+        } catch (_) {
+            return noEncontrado(res);
+        }
+    }
     const archivo = esInicio ? path.join(ROOT, "index.html") : path.normalize(path.join(ROOT, ruta));
     const relativo = path.relative(ROOT, archivo);
     const carpeta = relativo.split(path.sep)[0];
