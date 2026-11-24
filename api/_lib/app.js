@@ -16,6 +16,11 @@ const SESSION_HORAS = 8;
 const MAX_IMG = 3 * 1024 * 1024;            // 3 MB por imagen (el panel ya las reduce a ~100 KB)
 const MAX_IMGS_SERVICIO = 10;
 const MAX_DESTACADOS = 4;
+const MAX_IMGS_PORTADA = 8;
+const MAX_TAGS = 10;
+const MAX_HORARIOS = 7;
+// Imagen de portada que viene con el sitio; se puede conservar en el carrusel
+const PORTADA_FIJA = "/assets/img/portada2.png";
 const MAX_FALLOS = 5;
 const BLOQUEO_MIN = 15;
 
@@ -63,6 +68,8 @@ const VACIO = () => ({
     categorias: [],
     servicios: [],
     nosotros: { imagen: "", titulo: "", stats: Array.from({ length: 4 }, () => ({ valor: "", texto: "" })) },
+    portada: { titulo: "", tags: [], imagenes: [], intervalo: 5 },
+    footer: { texto: "", nombre: "", instagram: "", telefono: "", direccion: "", horarios: [] },
 });
 
 function texto(v, campo, max, obligatorio = true) {
@@ -199,7 +206,8 @@ function crearApi(store, { trustProxy = false, cookieSegura = false } = {}) {
             const nombre = String(r).split("/").pop();
             if (!NOMBRE_IMG.test(nombre)) continue;
             // No borra si otra parte del contenido todavía la usa
-            const enUso = db.servicios.some((s) => s.imagenes.includes(r)) || db.nosotros.imagen === r;
+            const enUso = db.servicios.some((s) => s.imagenes.includes(r)) || db.nosotros.imagen === r ||
+                (db.portada.imagenes || []).includes(r);
             if (!enUso) await store.borrarImagen(nombre).catch(() => {});
         }
     }
@@ -336,6 +344,45 @@ function crearApi(store, { trustProxy = false, cookieSegura = false } = {}) {
             db.nosotros = { imagen, titulo: texto(b.titulo, "el texto principal", 500, false), stats };
             await store.guardarDb(db);
             if (anterior && anterior !== imagen) await borrarImagenes(db, [anterior]);
+            return enviar(res, 200, db);
+        }
+
+        // Portada (carrusel, título y etiquetas)
+        if (metodo === "PUT" && ruta === "/api/portada") {
+            const b = await leerJson(req);
+            const lista = (x) => (Array.isArray(x) ? x : []);
+            const tags = lista(b.tags).map((t) => texto(t, "una etiqueta", 60, false)).filter(Boolean);
+            if (tags.length > MAX_TAGS) throw new ErrorCliente(`Máximo ${MAX_TAGS} etiquetas.`);
+            if (lista(b.imagenes).length > MAX_IMGS_PORTADA) throw new ErrorCliente(`Máximo ${MAX_IMGS_PORTADA} imágenes en la portada.`);
+            const anteriores = db.portada.imagenes || [];
+            const imagenes = await procesarImagenes(lista(b.imagenes), [...anteriores, PORTADA_FIJA]);
+            const intervalo = Math.min(30, Math.max(2, Math.round(Number(b.intervalo) || 5)));
+            db.portada = { editado: true, titulo: texto(b.titulo, "el título", 160, false), tags, imagenes, intervalo };
+            await store.guardarDb(db);
+            await borrarImagenes(db, anteriores.filter((r) => !imagenes.includes(r)));
+            return enviar(res, 200, db);
+        }
+
+        // Pie de página
+        if (metodo === "PUT" && ruta === "/api/footer") {
+            const b = await leerJson(req);
+            const horarios = (Array.isArray(b.horarios) ? b.horarios : [])
+                .map((h) => texto(h, "un horario", 80, false)).filter(Boolean);
+            if (horarios.length > MAX_HORARIOS) throw new ErrorCliente(`Máximo ${MAX_HORARIOS} líneas de horario.`);
+            const instagram = texto(b.instagram, "el usuario de Instagram", 60, false).replace(/^@/, "");
+            if (instagram && !/^[A-Za-z0-9._]+$/.test(instagram)) throw new ErrorCliente("El usuario de Instagram solo puede tener letras, números, puntos y guiones bajos.");
+            const telefono = texto(b.telefono, "el teléfono", 30, false);
+            if (telefono && !/^[+0-9 ()-]+$/.test(telefono)) throw new ErrorCliente("El teléfono solo puede tener números, espacios y +.");
+            db.footer = {
+                editado: true,
+                texto: texto(b.texto, "el texto", 400, false),
+                nombre: texto(b.nombre, "el nombre", 80, false),
+                instagram,
+                telefono,
+                direccion: texto(b.direccion, "la dirección", 120, false),
+                horarios,
+            };
+            await store.guardarDb(db);
             return enviar(res, 200, db);
         }
 

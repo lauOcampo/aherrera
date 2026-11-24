@@ -22,10 +22,12 @@
             <button class="nav-btn is-active" data-view="categorias">Categorías</button>
             <button class="nav-btn" data-view="servicios">Servicios</button>
             <button class="nav-btn" data-view="nosotros">Acerca de</button>
+            <button class="nav-btn" data-view="portada">Portada</button>
+            <button class="nav-btn" data-view="footer">Pie de página</button>
         </nav>
 
         <div class="sidebar__actions">
-            <a href="../index.html" target="_blank" rel="noopener" class="btn btn--ghost btn--sm">Ver sitio ↗</a>
+            <a href="../../index.html" target="_blank" rel="noopener" class="btn btn--ghost btn--sm">Ver sitio ↗</a>
             <button type="button" class="btn btn--ghost btn--sm" id="logout">Cerrar sesión</button>
         </div>
     </aside>
@@ -168,6 +170,103 @@
                 <h2>Vista previa</h2>
                 <div class="about-preview" id="aboutPreview"></div>
             </div>
+        </section>
+
+        <!-- ========== PORTADA ========== -->
+        <section class="view" id="view-portada">
+            <header class="view__head">
+                <h1>Portada</h1>
+                <p>Imágenes del carrusel, título principal y etiquetas de la parte superior de la web.</p>
+            </header>
+
+            <form class="panel" id="formPortada" novalidate>
+                <h2>Carrusel</h2>
+
+                <div class="field">
+                    <label>Imágenes <span class="hint">(máximo)</span></label>
+                    <label class="dropzone" for="porImagenes">
+                        <span>Haz clic para seleccionar imágenes</span>
+                        <input type="file" id="porImagenes" accept="image/*" multiple hidden>
+                    </label>
+                    <div class="thumbs" id="porPreview"></div>
+                </div>
+
+                <div class="field">
+                    <label for="porIntervalo">Segundos entre cada imagen</label>
+                    <input type="number" id="porIntervalo" min="2" max="30" step="1" value="5" class="input-corto">
+                </div>
+
+                <h2>Textos</h2>
+
+                <div class="field">
+                    <label for="porTitulo">Título principal</label>
+                    <input type="text" id="porTitulo" maxlength="160"
+                        placeholder="Ej: Donde el material se convierte en espacios">
+                </div>
+
+                <div class="field">
+                    <label>Etiquetas <span class="hint">(máximo 10)</span></label>
+                    <div id="porTags"></div>
+                    <button type="button" class="btn btn--ghost" id="addTag">+ Agregar etiqueta</button>
+                </div>
+
+                <p class="msg" id="msgPortada" role="alert"></p>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn--primary">Guardar cambios</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ========== PIE DE PÁGINA ========== -->
+        <section class="view" id="view-footer">
+            <header class="view__head">
+                <h1>Pie de página</h1>
+                <p>Textos, datos de contacto y horarios que aparecen al final de la web.
+                    Los campos vacíos no se muestran.</p>
+            </header>
+
+            <form class="panel" id="formFooter" novalidate>
+                <h2>Marca</h2>
+                <div class="field">
+                    <label for="ftTexto">Texto</label>
+                    <textarea id="ftTexto" rows="3" maxlength="400"
+                        placeholder="Ej: Asegura la durabilidad de tu proyecto desde la primera capa."></textarea>
+                </div>
+                <div class="field">
+                    <label for="ftNombre">Nombre</label>
+                    <input type="text" id="ftNombre" maxlength="80" placeholder="Ej: Alex Herrera">
+                </div>
+
+                <h2>Contacto</h2>
+                <div class="grid-2">
+                    <div class="field">
+                        <label for="ftInstagram">Usuario de Instagram <span class="hint">(sin @)</span></label>
+                        <input type="text" id="ftInstagram" maxlength="60" placeholder="Ej: aherrera_surfaces">
+                    </div>
+                    <div class="field">
+                        <label for="ftTelefono">Teléfono</label>
+                        <input type="text" id="ftTelefono" maxlength="30" placeholder="Ej: +34 682 87 27 05">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="ftDireccion">Dirección</label>
+                    <input type="text" id="ftDireccion" maxlength="120" placeholder="Ej: Palma, Illes Balears, España">
+                </div>
+
+                <h2>Horarios</h2>
+                <div class="field">
+                    <label>Líneas de horario <span class="hint">(máximo 7)</span></label>
+                    <div id="ftHorarios"></div>
+                    <button type="button" class="btn btn--ghost" id="addHorario">+ Agregar línea</button>
+                </div>
+
+                <p class="msg" id="msgFooter" role="alert"></p>
+
+                <div class="actions">
+                    <button type="submit" class="btn btn--primary">Guardar cambios</button>
+                </div>
+            </form>
         </section>
     </main>
 

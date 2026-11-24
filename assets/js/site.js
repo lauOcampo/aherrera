@@ -7,7 +7,7 @@
     const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
         ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-    let data = { categorias: [], servicios: [], nosotros: null };
+    let data = { categorias: [], servicios: [], nosotros: null, portada: null, footer: null };
     let filtro = "todos";
     let verTodo = false;
 
@@ -16,10 +16,87 @@
             const res = await fetch("/api/contenido", { cache: "no-store" });
             if (!res.ok) throw new Error();
             const d = await res.json();
-            return { categorias: d.categorias || [], servicios: d.servicios || [], nosotros: d.nosotros || null };
+            return {
+                categorias: d.categorias || [], servicios: d.servicios || [], nosotros: d.nosotros || null,
+                portada: d.portada || null, footer: d.footer || null,
+            };
         } catch (_) {
-            return { categorias: [], servicios: [], nosotros: null };
+            return { categorias: [], servicios: [], nosotros: null, portada: null, footer: null };
         }
+    }
+
+    /* ---------- Portada: carrusel, título y etiquetas ---------- */
+    const reducirMovimiento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let slideActual = 0;
+    let temporizador = null;
+
+    function irASlide(i) {
+        const slides = document.querySelectorAll("#heroSlides .hero__slide");
+        if (!slides.length) return;
+        slideActual = (i + slides.length) % slides.length;
+        slides.forEach((s, n) => s.classList.toggle("is-active", n === slideActual));
+        document.querySelectorAll("#heroDots button").forEach((b, n) =>
+            b.setAttribute("aria-current", n === slideActual ? "true" : "false"));
+    }
+
+    function iniciarCarrusel(segundos) {
+        clearInterval(temporizador);
+        const total = document.querySelectorAll("#heroSlides .hero__slide").length;
+        if (total < 2 || reducirMovimiento) return;
+        temporizador = setInterval(() => {
+            if (!document.hidden) irASlide(slideActual + 1);
+        }, segundos * 1000);
+    }
+
+    function renderPortada() {
+        const p = data.portada;
+        if (!p || !p.editado) return; // sin cambios guardados: se queda lo del HTML
+
+        if (p.titulo) $("heroTitulo").textContent = p.titulo;
+        $("heroTags").innerHTML = (p.tags || []).map((t) => `<li>${esc(t)}</li>`).join("");
+        $("heroTags").hidden = !(p.tags || []).length;
+
+        const imgs = p.imagenes || [];
+        $("heroSlides").innerHTML = imgs.map((src, i) =>
+            `<img class="hero__slide${i === 0 ? " is-active" : ""}" src="${esc(src)}" alt=""${i ? ' loading="lazy"' : ""}>`
+        ).join("");
+        const segundos = p.intervalo || 5;
+        $("heroDots").innerHTML = imgs.length > 1
+            ? imgs.map((_, i) => `<button type="button" data-slide="${i}" aria-label="Imagen ${i + 1}"></button>`).join("")
+            : "";
+        slideActual = 0;
+        irASlide(0);
+        iniciarCarrusel(segundos);
+
+        $("heroDots").onclick = (e) => {
+            const b = e.target.closest("[data-slide]");
+            if (!b) return;
+            irASlide(Number(b.dataset.slide));
+            iniciarCarrusel(segundos); // reinicia el tiempo tras elegir una imagen
+        };
+    }
+
+    /* ---------- Pie de página ---------- */
+    function renderFooter() {
+        const f = data.footer;
+        if (!f || !f.editado) return;
+
+        $("ftTexto").textContent = f.texto;
+        $("ftTexto").hidden = !f.texto;
+        $("ftNombre").textContent = f.nombre;
+        $("ftNombre").hidden = !f.nombre;
+
+        const contacto = [];
+        if (f.instagram) {
+            contacto.push(`<p><a href="https://instagram.com/${encodeURIComponent(f.instagram)}" target="_blank" rel="noopener">IG: ${esc(f.instagram)}</a></p>`);
+        }
+        if (f.telefono) contacto.push(`<p><a href="tel:${f.telefono.replace(/[^+0-9]/g, "")}">${esc(f.telefono)}</a></p>`);
+        if (f.direccion) contacto.push(`<p>${esc(f.direccion)}</p>`);
+        $("ftContacto").innerHTML = contacto.join("");
+        $("ftContacto").parentElement.hidden = !contacto.length;
+
+        $("ftHorarios").innerHTML = (f.horarios || []).map((h) => `<p>${esc(h)}</p>`).join("");
+        $("ftHorarios").parentElement.hidden = !(f.horarios || []).length;
     }
 
     /* ---------- Acerca de nosotros ---------- */
@@ -159,6 +236,8 @@
     /* ---------- Inicio ---------- */
     (async () => {
         data = await leer();
+        renderPortada();
+        renderFooter();
         renderNosotros();
         renderServicios();
     })();

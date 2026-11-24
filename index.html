@@ -33,6 +33,12 @@
 
     <!-- HERO -->
     <header class="hero">
+        <!-- CARRUSEL: las imágenes se cambian desde el panel (Portada) -->
+        <div class="hero__slides" id="heroSlides" aria-hidden="true">
+            <img class="hero__slide is-active" src="assets/img/portada2.png" alt="">
+        </div>
+        <div class="hero__dots" id="heroDots" role="group" aria-label="Imágenes de portada"></div>
+
         <nav class="nav" aria-label="Principal">
             <a href="#nosotros">Nosotros</a>
             <a href="#proyectos">Servicios</a>
@@ -42,10 +48,10 @@
         </nav>
 
         <div class="hero__content">
-            <h1>Donde el material se convierte en espacios</h1>
+            <h1 id="heroTitulo">Donde el material se convierte en espacios</h1>
             <!-- Antes: caracteres Unicode "negrita matemática" (𝐑𝐞𝐯𝐞𝐬…), que los lectores
                  de pantalla no leen bien y que fallan en muchas fuentes. Ahora es una lista real. -->
-            <ul class="hero__tags">
+            <ul class="hero__tags" id="heroTags">
                 <li>Revestimientos</li>
                 <li>Microcemento</li>
                 <li>Multicapa</li>
@@ -106,23 +112,27 @@
     <footer class="footer" id="contacto">
         <div class="footer__brand">
             <div class="logo">SURFACES</div>
-            <p>Asegura la durabilidad de tu proyecto desde la primera capa.
+            <p id="ftTexto">Asegura la durabilidad de tu proyecto desde la primera capa.
                 Contacta con nosotros por DM 📩</p>
-            <p class="footer__name">Alex Herrera</p>
+            <p class="footer__name" id="ftNombre">Alex Herrera</p>
         </div>
 
         <div class="footer__col">
             <h2 class="footer__title">Contacto</h2>
-            <p><a href="https://instagram.com/aherrera_surfaces" target="_blank" rel="noopener">IG: aherrera_surfaces</a></p>
-            <p><a href="tel:+34682872705">+34 682 87 27 05</a></p>
-            <p>Palma, Illes Balears, España</p>
+            <div id="ftContacto">
+                <p><a href="https://instagram.com/aherrera_surfaces" target="_blank" rel="noopener">IG: aherrera_surfaces</a></p>
+                <p><a href="tel:+34682872705">+34 682 87 27 05</a></p>
+                <p>Palma, Illes Balears, España</p>
+            </div>
         </div>
 
         <div class="footer__col">
             <h2 class="footer__title">Horarios</h2>
-            <p>Lunes: 8:00 am – 7:00 pm</p>
-            <p>Martes – sábado: 9:00 am – 6:00 pm</p>
-            <p>Domingos: cerrado</p>
+            <div id="ftHorarios">
+                <p>Lunes: 8:00 am – 7:00 pm</p>
+                <p>Martes – sábado: 9:00 am – 6:00 pm</p>
+                <p>Domingos: cerrado</p>
+            </div>
         </div>
 
         <p class="footer__copy">

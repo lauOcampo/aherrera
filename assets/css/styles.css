@@ -165,10 +165,67 @@ textarea {
     align-items: flex-end;
     padding: 120px var(--gutter) 48px;   /* espacio arriba para el nav */
     color: #fff;
-    background:
-        linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .65)),
-        url("../img/portada2.png") center / cover no-repeat,
-        linear-gradient(135deg, #0b1f3a, #0e6b5a);
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(135deg, #0b1f3a, #0e6b5a);
+}
+
+/* Carrusel de fondo: las imágenes se funden una sobre otra */
+.hero__slides {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.hero__slides::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .65));
+}
+
+.hero__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+
+.hero__slide.is-active {
+    opacity: 1;
+}
+
+.hero__dots {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 24px;
+    display: flex;
+    gap: 8px;
+}
+
+.hero__dots button {
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, .8);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color .3s, transform .3s;
+}
+
+.hero__dots button[aria-current="true"] {
+    background: #fff;
+    transform: scale(1.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero__slide {
+        transition: none;
+    }
 }
 
 .nav {
@@ -202,6 +259,7 @@ textarea {
 
 .hero__content {
     max-width: 640px;
+    margin-bottom: 16px;
 }
 
 .hero h1 {
@@ -372,7 +430,8 @@ textarea {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 28px;
-    align-items: start;
+    grid-auto-rows: 1fr;               /* todas las filas (y tarjetas) con la misma altura */
+    align-items: stretch;
 }
 
 .card {
@@ -381,6 +440,8 @@ textarea {
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    height: 100%;
+    min-width: 0;
     padding: 10px 10px 18px;
     text-align: center;
     background: #fff;
@@ -425,7 +486,10 @@ textarea {
 }
 
 .card img {
+    display: block;
+    flex: none;
     width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     border-radius: 4px;
@@ -433,16 +497,30 @@ textarea {
     background: var(--blue-tint);      /* color mientras carga la imagen */
 }
 
+/* Título, descripción y destacados ocupan siempre el mismo alto:
+   el texto largo se recorta con "…" y el corto deja el espacio vacío */
 .card h3 {
+    width: 100%;
+    height: calc(1.2em * 2);           /* 2 líneas */
     font-size: 1.2rem;
     font-weight: 500;
     line-height: 1.2;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
 }
 
 .card p {
+    width: 100%;
     max-width: 36ch;
+    height: calc(1.5em * 3);           /* 3 líneas */
     font-size: .95rem;
+    line-height: 1.5;
     color: var(--muted);
+    overflow-wrap: anywhere;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
@@ -454,26 +532,35 @@ textarea {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-content: flex-start;
     gap: 4px 20px;
+    width: 100%;
+    height: calc(1.4em * 2 + 4px);     /* 2 filas de destacados */
     margin: 4px 0 8px;
+    overflow: hidden;
     font-family: var(--font-sans);
     font-size: .75rem;
+    line-height: 1.4;
+}
+
+.card li {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* El botón queda siempre abajo y con el mismo ancho */
+.card .btn {
+    flex: none;
+    margin-top: auto;
+    min-width: 140px;
+    justify-content: center;
 }
 
 .card li::before {
     content: "• ";
     color: var(--accent);
-}
-
-/* Desfase visual de columnas, solo cuando hay 3 columnas */
-@media (min-width: 901px) {
-    .card:nth-child(3n + 2) {
-        margin-top: 12px;
-    }
-
-    .card:nth-child(3n) {
-        margin-top: 24px;
-    }
 }
 
 /* ---------- Footer ---------- */

@@ -378,6 +378,163 @@
         setTimeout(() => { msgNos.textContent = ""; }, 3000);
     });
 
+    // ---------- Listas de campos de texto (etiquetas, horarios) ----------
+    function crearListaTextos(cont, boton, { max, maxlength, placeholder, textoBoton }) {
+        function actualizar() {
+            const lleno = cont.children.length >= max;
+            boton.disabled = lleno;
+            boton.textContent = lleno ? `Máximo ${max}` : textoBoton;
+        }
+        function agregar(valor = "") {
+            if (cont.children.length >= max) return null;
+            const row = document.createElement("div");
+            row.className = "destacado-row";
+            row.innerHTML = `<input type="text" maxlength="${maxlength}" placeholder="${esc(placeholder)}" value="${esc(valor)}">
+                     <button type="button" aria-label="Quitar">×</button>`;
+            row.querySelector("button").addEventListener("click", () => { row.remove(); actualizar(); });
+            cont.appendChild(row);
+            actualizar();
+            return row;
+        }
+        boton.addEventListener("click", () => {
+            const row = agregar();
+            if (row) row.querySelector("input").focus();
+        });
+        return {
+            cargar(valores) { cont.innerHTML = ""; valores.forEach((v) => agregar(v)); actualizar(); },
+            leer: () => [...cont.querySelectorAll("input")].map((i) => i.value.trim()).filter(Boolean),
+        };
+    }
+
+    function mensaje(el, texto, ok) {
+        el.classList.toggle("ok", ok);
+        el.textContent = texto;
+        if (ok) setTimeout(() => { if (el.textContent === texto) el.textContent = ""; }, 3000);
+    }
+
+    // ---------- Portada ----------
+    // Lo que muestra la web mientras no se haya guardado nada en el panel
+    const PORTADA_INICIAL = {
+        titulo: "Donde el material se convierte en espacios",
+        tags: ["Revestimientos", "Microcemento", "Multicapa", "Autonivelante de regulación", "Autonivelante para suelo radiante"],
+        imagenes: ["/assets/img/portada2.png"],
+        intervalo: 5,
+    };
+    const MAX_IMGS_PORTADA = 8;
+    const formPor = $("formPortada");
+    const porPreview = $("porPreview");
+    const tagsPortada = crearListaTextos($("porTags"), $("addTag"), {
+        max: 10, maxlength: 60, placeholder: "Ej: Microcemento", textoBoton: "+ Agregar etiqueta",
+    });
+    let porImagenes = [];
+
+    function renderPorPreview() {
+        const n = porImagenes.length;
+        porPreview.innerHTML = n ? porImagenes.map((src, i) => `
+      <div class="thumb thumb--portada">
+        <img src="${src}" alt="">
+        <span class="thumb__n">${i + 1}</span>
+        <span class="thumb__orden">
+          <button type="button" data-mover="${i}" data-dir="-1" aria-label="Mover antes"${i === 0 ? " disabled" : ""}>‹</button>
+          <button type="button" data-mover="${i}" data-dir="1" aria-label="Mover después"${i === n - 1 ? " disabled" : ""}>›</button>
+        </span>
+        <button type="button" data-rm="${i}" aria-label="Quitar imagen">×</button>
+      </div>`).join("")
+            : '<p class="empty">Sin imágenes: se mostrará un fondo de color.</p>';
+    }
+
+    function cargarPortada() {
+        const p = state.portada && state.portada.editado ? state.portada : PORTADA_INICIAL;
+        $("porTitulo").value = p.titulo || "";
+        $("porIntervalo").value = p.intervalo || 5;
+        tagsPortada.cargar(p.tags && p.tags.length ? p.tags : [""]);
+        porImagenes = [...(p.imagenes || [])];
+        renderPorPreview();
+    }
+
+    $("porImagenes").addEventListener("change", async (e) => {
+        const libres = Math.max(0, MAX_IMGS_PORTADA - porImagenes.length);
+        const files = [...e.target.files];
+        if (files.length > libres) alert(`Caben como máximo ${MAX_IMGS_PORTADA} imágenes en la portada; se agregarán ${libres}.`);
+        for (const file of files.slice(0, libres)) {
+            // Más grandes que las de servicios porque ocupan todo el ancho de la pantalla
+            try { porImagenes.push(await comprimir(file, 1600, 0.72)); } catch (_) { /* archivo inválido */ }
+        }
+        e.target.value = "";
+        renderPorPreview();
+    });
+
+    porPreview.addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        if (b.dataset.rm !== undefined) porImagenes.splice(Number(b.dataset.rm), 1);
+        if (b.dataset.mover !== undefined) {
+            const i = Number(b.dataset.mover);
+            const j = i + Number(b.dataset.dir);
+            if (j < 0 || j >= porImagenes.length) return;
+            [porImagenes[i], porImagenes[j]] = [porImagenes[j], porImagenes[i]];
+        }
+        renderPorPreview();
+    });
+
+    formPor.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const msgPor = $("msgPortada");
+        const btn = formPor.querySelector("button[type=submit]");
+        // El servidor (Vercel) no acepta peticiones de más de ~4,5 MB
+        const pesoNuevas = porImagenes.filter((s) => s.startsWith("data:")).reduce((t, s) => t + s.length, 0);
+        if (pesoNuevas > 4 * 1024 * 1024) {
+            return mensaje(msgPor, "Las imágenes nuevas pesan demasiado juntas. Quita algunas, guarda, y luego agrega el resto.", false);
+        }
+        btn.disabled = true;
+        mensaje(msgPor, "Guardando...", true);
+        const error = await enviar(API.put("/api/portada", {
+            titulo: $("porTitulo").value.trim(),
+            tags: tagsPortada.leer(),
+            imagenes: porImagenes,
+            intervalo: Number($("porIntervalo").value) || 5,
+        }));
+        btn.disabled = false;
+        if (error) return mensaje(msgPor, error, false);
+        cargarPortada();
+        mensaje(msgPor, "Cambios guardados.", true);
+    });
+
+    // ---------- Pie de página ----------
+    const FOOTER_INICIAL = {
+        texto: "Asegura la durabilidad de tu proyecto desde la primera capa. Contacta con nosotros por DM 📩",
+        nombre: "Alex Herrera",
+        instagram: "aherrera_surfaces",
+        telefono: "+34 682 87 27 05",
+        direccion: "Palma, Illes Balears, España",
+        horarios: ["Lunes: 8:00 am – 7:00 pm", "Martes – sábado: 9:00 am – 6:00 pm", "Domingos: cerrado"],
+    };
+    const formFt = $("formFooter");
+    const CAMPOS_FT = { texto: "ftTexto", nombre: "ftNombre", instagram: "ftInstagram", telefono: "ftTelefono", direccion: "ftDireccion" };
+    const horarios = crearListaTextos($("ftHorarios"), $("addHorario"), {
+        max: 7, maxlength: 80, placeholder: "Ej: Lunes: 8:00 am – 7:00 pm", textoBoton: "+ Agregar línea",
+    });
+
+    function cargarFooter() {
+        const f = state.footer && state.footer.editado ? state.footer : FOOTER_INICIAL;
+        for (const [campo, id] of Object.entries(CAMPOS_FT)) $(id).value = f[campo] || "";
+        horarios.cargar(f.horarios && f.horarios.length ? f.horarios : [""]);
+    }
+
+    formFt.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const msgFt = $("msgFooter");
+        const btn = formFt.querySelector("button[type=submit]");
+        const datos = { horarios: horarios.leer() };
+        for (const [campo, id] of Object.entries(CAMPOS_FT)) datos[campo] = $(id).value.trim();
+        btn.disabled = true;
+        const error = await enviar(API.put("/api/footer", datos));
+        btn.disabled = false;
+        if (error) return mensaje(msgFt, error, false);
+        cargarFooter();
+        mensaje(msgFt, "Cambios guardados.", true);
+    });
+
     // ---------- Cerrar sesión ----------
     $("logout").addEventListener("click", async () => {
         await Auth.logout();
@@ -395,6 +552,8 @@
         renderSelectCategorias();
         renderServicios();
         cargarNosotros();
+        cargarPortada();
+        cargarFooter();
     }
 
     addDestacado();
