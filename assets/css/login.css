@@ -29,7 +29,7 @@ input {
 
 body {
     min-height: 100vh;
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     color: var(--ink);
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
@@ -174,4 +174,13 @@ body {
     * {
         transition: none !important;
     }
+}
+input,
+button {
+    font-family: inherit;
+}
+
+h1 {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-weight: 500;
 }

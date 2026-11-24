@@ -44,7 +44,7 @@ body {
     display: grid;
     grid-template-columns: 240px minmax(0, 1fr);
     min-height: 100vh;
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     color: var(--ink);
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
@@ -612,7 +612,7 @@ textarea:focus {
     padding: 20px;
     border: 1px dashed var(--line);
     border-radius: 10px;
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 .ap__img img,
@@ -825,4 +825,20 @@ textarea:focus {
     background: rgba(0, 0, 0, .6);
     color: #fff;
     font-size: .7rem;
+}
+
+/* ---------- Tipografía (igual que la web: Playfair Display + Inter) ---------- */
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+}
+
+.view__head h1,
+.ap__lead,
+.ap__stat strong,
+.logo h4 {
+    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+    font-weight: 500;
 }

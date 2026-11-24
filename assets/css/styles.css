@@ -12,8 +12,8 @@
     --muted: #555;
     --line: #d9d9d9;
 
-    --font-serif: "Alegreya", Georgia, "Times New Roman", serif;
-    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;   /* títulos */
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;   /* todo el texto */
 
     --gutter: clamp(20px, 7vw, 96px);
     --radius: 6px;
@@ -40,7 +40,7 @@ html {
 }
 
 body {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     color: var(--ink);
     background: #fff;
     line-height: 1.5;
@@ -685,4 +685,26 @@ textarea {
         grid-template-columns: 1fr;
         gap: 28px;
     }
+}
+/* ---------- Tipografía de títulos (estilo formal) ---------- */
+h1,
+h2,
+h3,
+.logo,
+.about__lead,
+.stat strong {
+    font-family: var(--font-serif);
+    letter-spacing: 0;
+}
+
+.hero h1 {
+    font-weight: 500;
+}
+
+.logo {
+    letter-spacing: .14em;
+}
+
+.footer__title {
+    font-weight: 600;
 }
