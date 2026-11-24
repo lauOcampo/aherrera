@@ -318,15 +318,17 @@
 
     function renderAboutPreview() {
         const n = leerNosotros();
+        // Como en el sitio público: solo aparecen las cifras que tienen valor
+        const conValor = n.stats.filter((s) => s.valor);
         $("aboutPreview").innerHTML = `
       <div class="ap__img">${n.imagen ? `<img src="${n.imagen}" alt="">` : '<div class="ap__ph">Sin imagen</div>'}</div>
       <div class="ap__txt">
         <p class="ap__lead">${esc(n.titulo) || '<span class="ph">Texto principal...</span>'}</p>
-        <div class="ap__stats">
-          ${n.stats.map((s, i) =>
-            `<div class="ap__stat${i === 1 ? " is-hl" : ""}"><p>${esc(s.texto)}</p><strong>${esc(s.valor)}</strong></div>`
-        ).join("")}
-        </div>
+        ${conValor.length
+            ? `<div class="ap__stats">${conValor.map((s) =>
+                `<div class="ap__stat"><p>${esc(s.texto)}</p><strong>${esc(s.valor)}</strong></div>`
+            ).join("")}</div>`
+            : '<p class="ap__vacio">Escribe al menos un valor para que se vean las cifras.</p>'}
       </div>`;
     }
 
