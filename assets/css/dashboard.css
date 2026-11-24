@@ -577,11 +577,6 @@ textarea:focus {
     border-radius: 10px;
 }
 
-.stat-edit--hl {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-}
-
 .stat-edit__n {
     position: absolute;
     top: 14px;
@@ -594,11 +589,6 @@ textarea:focus {
     background: var(--ink);
     color: #fff;
     font-size: .75rem;
-}
-
-.stat-edit--hl .stat-edit__n {
-    background: var(--accent);
-    color: var(--blue);
 }
 
 /* Vista previa: imita el bloque "Nosotros" del sitio público */
@@ -650,18 +640,31 @@ textarea:focus {
     border-top: 1px solid var(--line);
 }
 
+/* Igual que en el sitio público: cifra arriba, descripción debajo y raya naranja */
 .ap__stat {
-    min-height: 120px;
-    padding: 12px 14px;
+    padding: 18px 14px 16px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
     border-bottom: 1px solid var(--line);
     border-right: 1px solid var(--line);
 }
 
+.ap__stat::before {
+    content: "";
+    order: -2;
+    width: 22px;
+    height: 3px;
+    margin-bottom: 6px;
+    background: var(--orange);
+}
+
 .ap__stat:nth-child(2n) {
+    border-right: 0;
+}
+
+.ap__stat:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
     border-right: 0;
 }
 
@@ -671,20 +674,18 @@ textarea:focus {
 }
 
 .ap__stat strong {
+    order: -1;
     font-size: 2rem;
     font-weight: 400;
     line-height: 1;
     color: var(--navy);
 }
 
-/* Texto oscuro sobre naranja (igual que en el sitio público) */
-.ap__stat.is-hl {
-    background: var(--orange);
-}
-
-.ap__stat.is-hl p,
-.ap__stat.is-hl strong {
-    color: var(--navy);
+.ap__vacio {
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-size: .8rem;
+    color: #8794a0;
 }
 
 /* ---------- Responsive ---------- */

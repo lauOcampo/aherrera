@@ -108,18 +108,23 @@
 
     function renderNosotros() {
         const n = data.nosotros;
-        if (!n) return; // si no hay nada guardado, se queda el contenido original del HTML
+        if (!n) return; // sin respuesta del servidor: se queda el contenido original del HTML
 
         if (n.imagen) $("aboutImg").src = n.imagen;
         if (n.titulo) $("aboutLead").textContent = n.titulo;
 
-        const cajas = document.querySelectorAll("#nosotros .stat");
-        (n.stats || []).forEach((s, i) => {
-            const caja = cajas[i];
-            if (!caja || (!s.valor && !s.texto)) return;
-            caja.querySelector("p").textContent = s.texto;
+        // Solo se muestran las cifras que tienen valor: una caja sin número parece rota.
+        // Se quitan del DOM (no solo se ocultan) para que los bordes de la cuadrícula cuadren.
+        const stats = n.stats || [];
+        document.querySelectorAll("#nosotros .stat").forEach((caja, i) => {
+            const s = stats[i];
+            if (!s || !s.valor) return caja.remove();
+            const p = caja.querySelector("p");
+            p.textContent = s.texto;
+            p.hidden = !s.texto;
             caja.querySelector("strong").innerHTML = formatoValor(s.valor);
         });
+        document.querySelector("#nosotros .stats").hidden = !document.querySelector("#nosotros .stat");
     }
 
     /* ---------- Servicios ---------- */
